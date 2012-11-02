@@ -53,7 +53,7 @@ class MysqlHandler(object):
 
 
 if __name__ == '__main__':
-    """"用于测试"""
+    """用于测试"""
     confs = {
         'host': 'localhost',
         'user': 'user',
