@@ -24,14 +24,11 @@ from defaultcrawler.utils.tools import *
 fn_config = 'config.ini'
 config = ConfigParser()
 config.read(fn_config)
-configs_db = config.items('DB')
-configs_time = config.items('TIME')
-configs_scrapy = config.items('SCRAPY')
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-os.environ['TZ'] = configs_time['timezone']
+os.environ['TZ'] = config.get('TIME', 'timezone')
 time.tzset()
 
 
@@ -44,10 +41,10 @@ class Crawler(BaseSpider):
         global configs_scrapy
 
         self.confs_db = {
-            'host': configs_db['host'],
-            'user': configs_db['user'],
-            'passwd': configs_db['passwd'],
-            'db': configs_db['db'],
+            'host': config.get('DB', 'host'),
+            'user': config.get('DB', 'user'),
+            'passwd': config.get('DB', 'passwd'),
+            'db': config.get('DB', 'db'),
             }
         self.db = MysqlHandler(self.confs_db)
 
@@ -63,9 +60,9 @@ class Crawler(BaseSpider):
             'Referer'        : 'http://www.google.com',
             }
 
-        settings.overrides['CONCURRENT_REQUESTS'] = configs_scrapy['concurrent_requests']
-        settings.overrides['CONCURRENT_REQUESTS_PER_DOMAIN'] = configs_scrapy['concurrent_requests_per_domain']
-        settings.overrides['DOWNLOAD_TIMEOUT'] = configs_scrapy['download_timeout']
+        settings.overrides['CONCURRENT_REQUESTS'] = config.get('SCRAPY', 'concurrent_requests')
+        settings.overrides['CONCURRENT_REQUESTS_PER_DOMAIN'] = config.get('SCRAPY', 'concurrent_requests_per_domain')
+        settings.overrides['DOWNLOAD_TIMEOUT'] = config.get('SCRAPY', 'download_timeout')
 
     def start_requests(self):
         headers = self.httpheaders

@@ -4,7 +4,6 @@
 import MySQLdb as mysqldb
 import MySQLdb.cursors
 from warnings import filterwarnings
-
 filterwarnings('ignore', category=mysqldb.Warning)
 
 class MysqlHandler(object):
@@ -25,6 +24,8 @@ class MysqlHandler(object):
             print str(e)
             raise Exception('MysqlHandler init failed.')
 
+        self.try_times = 0      # 纪录操作数据库出现异常时的次数
+
 
     def __del__(self):
         try:
@@ -38,12 +39,23 @@ class MysqlHandler(object):
         try:
             self.cursor.execute(sql, params)
             if self.conn.affected_rows():
+                self.try_times = 0
                 return True
         except Exception,e:
+            """尝试三次,若还有异常,则不再尝试"""
+            self.try_times += 1
+            if self.try_times > 3:
+                print 'Error executing:\n  '+sql, '\n  params:', params, '\n  err info:', str(e)
+                self.try_times = 0
+
+                return False
             if str(e).lower().find('gone away')!=-1:
                 self.__init__(self.conf)
                 return self.exe(sql, params)
             print 'Error executing:\n  '+sql, '\n  params:', params, '\n  err info:', str(e)
+
+        self.try_times = 0
+
         return False
 
 
