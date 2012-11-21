@@ -7,7 +7,7 @@ from warnings import filterwarnings
 filterwarnings('ignore', category=mysqldb.Warning)
 
 class MysqlHandler(object):
-    
+
     def __init__(self, conf, usedict=True):
         try:
             self.conf    = conf

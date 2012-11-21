@@ -37,8 +37,7 @@ class Crawler(BaseSpider):
     name = 'crawler'
 
     def __init__(self):
-        global configs_db
-        global configs_scrapy
+        global config
 
         self.confs_db = {
             'host': config.get('DB', 'host'),
