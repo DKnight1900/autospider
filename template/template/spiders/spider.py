@@ -40,10 +40,10 @@ class Crawler(BaseSpider):
         global config
 
         self.confs_db = {
-            'host': config.get('DB', 'host'),
-            'user': config.get('DB', 'user'),
+            'host'  : config.get('DB', 'host'),
+            'user'  : config.get('DB', 'user'),
             'passwd': config.get('DB', 'passwd'),
-            'db': config.get('DB', 'db'),
+            'db'    : config.get('DB', 'db'),
             }
         self.db = MysqlHandler(self.confs_db)
 

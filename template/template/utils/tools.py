@@ -13,7 +13,6 @@ config = ConfigParser()
 config.read(fn_config)
 timezone = config.get('TIME', 'timezone')
 
-
 os.environ['TZ'] = timezone
 time.tzset()
 
@@ -22,14 +21,11 @@ def sqltime(formate):
     :param str formate: 可取 `date` `datetime`
     :return: str 类型的时间
     """
-    ttu = time.localtime()
-
     if formate == 'datetime':
-        rettime = '%s-%s-%s %s:%s:%s' % \
-            (ttu[0], ttu[1], ttu[2], ttu[3], ttu[4], ttu[5])
+        rettime = time.strftime('%Y-%m-%d %X')
     elif formate == 'date':
-        rettime = '%s-%s-%s' % (ttu[0], ttu[1], ttu[2])
-
+        rettime = time.strftime('%Y-%m-%d')
+        
     return rettime    
 
 def trimwords(word):
