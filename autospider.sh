@@ -7,6 +7,7 @@ scrapy startproject $scrapyproject
 
 cd $scrapyproject
 cp  ../template/config.ini ./
+cp ../template/README.org ./
 sed -i 's/defaulthome/'$1'/' config.ini # 替换 home 目录名称
 
 
