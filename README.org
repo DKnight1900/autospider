@@ -22,6 +22,14 @@
   如
   
   $ sh autospider.sh testspider Crawler.py
+
+  在新建立的爬虫中,如上述建立的爬虫中,先在 config.ini 文件中根据需求修改数据库和
+  Scrapy 配置信息.然后在
+
+  testspider/url/Urls.py
+
+  文件中添加初始 urls.
+  最后完善具体的爬虫的代码.
 * TODO
   + 完善这个框架的功能，使用户把精力主要放在分析填写页面抓取规则、处理页面数据
   + 完善配置文件的管理
