@@ -9,14 +9,17 @@ filterwarnings('ignore', category=mysqldb.Warning)
 class MysqlHandler(object):
 
     def __init__(self, conf, usedict=True):
+        self.conf    = conf
+        self.usedict = usedict
+
         try:
             self.conf    = conf
             self.usedict = usedict
 
-            if usedict:
-                self.conn = mysqldb.connect(cursorclass=MySQLdb.cursors.DictCursor, **conf)
+            if self.usedict:
+                self.conn = mysqldb.connect(cursorclass=MySQLdb.cursors.DictCursor, **self.conf)
             else:
-                self.conn = mysqldb.connect(**conf)
+                self.conn = mysqldb.connect(**self.conf)
 
             self.conn.autocommit(True)
             self.cursor = self.conn.cursor()
@@ -33,6 +36,18 @@ class MysqlHandler(object):
         except:
             pass
 
+    def db_init(self):
+        try:
+            if self.usedict:
+                self.conn = mysqldb.connect(cursorclass=MySQLdb.cursors.DictCursor, **self.conf)
+            else:
+                self.conn = mysqldb.connect(**self.conf)
+                
+                self.conn.autocommit(True)
+                self.cursor = self.conn.cursor()
+        except Exception,e:
+            raise Exception('MysqlHandler init failed. ERROR: %s' % (str(e), ))
+
     def exe(self, sql, params=()):
         try:
             self.cursor.execute(sql, params)
@@ -41,15 +56,15 @@ class MysqlHandler(object):
 
                 return True
         except Exception,e:
-            """尝试三次,若还有异常,则不再尝试"""
+            """再尝试三次,若还有异常,则不再尝试"""
             self.try_times += 1
             if self.try_times > 3:
                 print 'Error executing:\n%s\nparams:%s\nerrinfo:%s' % (sql, params, str(e))
-                self.try_times = 0
 
-                return False
+                raise Exception('FAILED TO EXECUTE THE SQL AFTER 3 TIMES!')
             else:
-                self.__init__(self.conf)
+                """重连数据库并执行数据库操作"""
+                self.db_init()
 
                 return self.exe(sql, params)
 
