@@ -82,7 +82,7 @@ class Crawler(BaseSpider):
             meta    = {}
             cookies = {}
             
-            # 使用时修改下 callback 的函数名
+            # 使用时可根据需求修改下 callback 的函数名,但不要设置为 'parse' 即可
             yield Request(url, headers=headers, meta=meta, cookies=cookies, callback=self.parse_origin)
 
     def parse_origin(self, response):
