@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 #coding: utf-8
 
-"""
+"""实现快速爬虫开发的框架.
+
+.. 最佳实践:
+
+    * 在处理方法中,把要发送的新的请求加入到一个 list 类型的结构中,在方法的最后集中发送,
+      这样可以避免 `yield` 的一些 '副作用'
 """
 
 import sys
@@ -60,7 +65,8 @@ class Crawler(BaseSpider):
             }
 
         settings.overrides['CONCURRENT_REQUESTS'] = config.get('SCRAPY', 'concurrent_requests')
-        settings.overrides['CONCURRENT_REQUESTS_PER_DOMAIN'] = config.get('SCRAPY', 'concurrent_requests_per_domain')
+        settings.overrides['CONCURRENT_REQUESTS_PER_DOMAIN'] = \
+                                   config.get('SCRAPY', 'concurrent_requests_per_domain')
         settings.overrides['DOWNLOAD_TIMEOUT'] = config.get('SCRAPY', 'download_timeout')
 
     def start_requests(self):
@@ -69,12 +75,15 @@ class Crawler(BaseSpider):
             ua = json.loads(self.ua.get_ua())['0']
             headers['User-Agent'] = ua
 
-            # 在这里可添加些要传给 callback 的参数,返入 meta 中, 如
-            # meta = {'name': 'flyer', 'url_refer': url}
-            meta = {}
+            # 在这里可添加些要传给 callback 的参数,加入 meta 中, 如
+            # meta = {'name': 'flyer', 'url_refer': url, }
+            # 也可以添加 cookies 信息,如
+            # cookies = {'provinceId': 2, }
+            meta    = {}
+            cookies = {}
             
             # 使用时修改下 callback 的函数名
-            yield Request(url, headers=headers, meta=meta, callback=self.parse_origin)
+            yield Request(url, headers=headers, meta=meta, cookies=cookies, callback=self.parse_origin)
 
     def parse_origin(self, response):
         """处理入口 url 返回的响应"""
