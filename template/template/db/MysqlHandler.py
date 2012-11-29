@@ -26,7 +26,6 @@ class MysqlHandler(object):
 
         self.try_times = 0      # 纪录操作数据库出现异常时的次数
 
-
     def __del__(self):
         try:
             self.cursor.close()
@@ -34,30 +33,25 @@ class MysqlHandler(object):
         except:
             pass
 
-
     def exe(self, sql, params=()):
         try:
             self.cursor.execute(sql, params)
             if self.conn.affected_rows():
                 self.try_times = 0
+
                 return True
         except Exception,e:
             """尝试三次,若还有异常,则不再尝试"""
             self.try_times += 1
             if self.try_times > 3:
-                print 'Error executing:\n  '+sql, '\n  params:', params, '\n  err info:', str(e)
+                print 'Error executing:\n%s\nparams:%s\nerrinfo:%s' % (sql, params, str(e))
                 self.try_times = 0
 
                 return False
-            if str(e).lower().find('gone away')!=-1:
+            else:
                 self.__init__(self.conf)
+
                 return self.exe(sql, params)
-            print 'Error executing:\n  '+sql, '\n  params:', params, '\n  err info:', str(e)
-
-        self.try_times = 0
-
-        return False
-
 
     def close(self):
         self.cursor.close()
