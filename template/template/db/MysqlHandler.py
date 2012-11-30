@@ -23,6 +23,7 @@ class MysqlHandler(object):
 
             self.conn.autocommit(True)
             self.cursor = self.conn.cursor()
+            self.cursor.execute('SET NAMES UTF8')
         except Exception,e:
             print str(e)
             raise Exception('MysqlHandler init failed.')
@@ -45,6 +46,7 @@ class MysqlHandler(object):
                 
                 self.conn.autocommit(True)
                 self.cursor = self.conn.cursor()
+                self.cursor.execute('SET NAMES UTF8')
         except Exception,e:
             raise Exception('MysqlHandler init failed. ERROR: %s' % (str(e), ))
 
