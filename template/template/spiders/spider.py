@@ -33,9 +33,6 @@ config.read(fn_config)
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-os.environ['TZ'] = config.get('TIME', 'timezone')
-time.tzset()
-
 
 class Crawler(BaseSpider):
     
